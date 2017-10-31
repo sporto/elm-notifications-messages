@@ -12,7 +12,7 @@ import Notifications
 type alias Model =
     { mod1 : Mod1.Model
     , mod2 : Mod2.Model
-    , notifications : Notifications.Model
+    , notifications : Notifications.Model Msg
     }
 
 
@@ -62,9 +62,9 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     div []
-        [ Html.map NotificationMsg (Notifications.view model.notifications)
-        , Html.map Mod1Msg (Mod1.view model.mod1)
+        [ Html.map Mod1Msg (Mod1.view model.mod1)
         , Html.map Mod2Msg (Mod2.view model.mod2)
+        , Notifications.view model.notifications
         ]
 
 
@@ -77,10 +77,29 @@ update msg model =
     case msg of
         Mod1Msg sub ->
             let
-                ( mod, cmd ) =
+                ( mod, cmd, action ) =
                     Mod1.update sub model.mod1
+
+                notifications =
+                    case action of
+                        Mod1.OpenNotification notification ->
+                            notification
+                                |> Notifications.mapMsg Mod1Msg
+                                |> Notifications.add model.notifications
+
+                        Mod1.CloseNotification id ->
+                            Notifications.dismiss model.notifications id
+
+                        _ ->
+                            model.notifications
+
+                updatedModel =
+                    { model
+                        | mod1 = mod
+                        , notifications = notifications
+                    }
             in
-                ( { model | mod1 = mod }, Cmd.map Mod1Msg cmd )
+                ( updatedModel, Cmd.map Mod1Msg cmd )
 
         Mod2Msg sub ->
             let
@@ -91,6 +110,7 @@ update msg model =
 
         NotificationMsg sub ->
             let
+                -- actionsMapper =
                 ( notifications, cmd ) =
                     Notifications.update sub model.notifications
             in

@@ -18,7 +18,7 @@ init =
 
 view model =
     div []
-        [ text model
+        [ h2 [] [ text "Mod2" ]
         ]
 
 
