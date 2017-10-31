@@ -42,3 +42,18 @@ notification notification =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     ( model, Cmd.none )
+
+
+
+-- newNotification : String -> Html msg
+-- newNotification message =
+--     div []
+--         [ text message
+--         ]
+
+
+newNotification : String -> Notification
+newNotification message =
+    { id = "id"
+    , message = message
+    }

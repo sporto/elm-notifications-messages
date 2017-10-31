@@ -1,6 +1,8 @@
 module Mod1 exposing (..)
 
 import Html exposing (..)
+import Html.Events exposing (onClick)
+import Notifications exposing (newNotification)
 
 
 type alias Model =
@@ -8,18 +10,25 @@ type alias Model =
 
 
 type Msg
-    = NoOp
+    = ShowNotification
 
 
 init =
-    ( "Two", Cmd.none )
+    ( "", Cmd.none )
 
 
 view model =
     div []
-        [ text model
+        [ button [ onClick ShowNotification ] [ text "Notification" ]
+        , text model
         ]
 
 
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        ShowNotification ->
+            let
+                notification =
+                    newNotification "Hello from 1"
+            in
+                ( "With Notification", Cmd.none, OpenNotification notification )
