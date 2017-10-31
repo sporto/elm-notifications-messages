@@ -3,6 +3,7 @@ module Main exposing (..)
 import Html exposing (..)
 import Mod1
 import Mod2
+import Notifications
 
 
 -- MODELS
@@ -11,6 +12,7 @@ import Mod2
 type alias Model =
     { mod1 : Mod1.Model
     , mod2 : Mod2.Model
+    , notifications : Notifications.Model
     }
 
 
@@ -21,6 +23,7 @@ type alias Model =
 type Msg
     = Mod1Msg Mod1.Msg
     | Mod2Msg Mod2.Msg
+    | NotificationMsg Notifications.Msg
 
 
 
@@ -35,9 +38,13 @@ init =
 
         ( mod2, cmd2 ) =
             Mod2.init
+
+        ( not, cmdNot ) =
+            Notifications.init
     in
         ( { mod1 = mod1
           , mod2 = mod2
+          , notifications = not
           }
         , Cmd.none
         )
@@ -55,7 +62,8 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     div []
-        [ Html.map Mod1Msg (Mod1.view model.mod1)
+        [ Html.map NotificationMsg (Notifications.view model.notifications)
+        , Html.map Mod1Msg (Mod1.view model.mod1)
         , Html.map Mod2Msg (Mod2.view model.mod2)
         ]
 
@@ -80,6 +88,13 @@ update msg model =
                     Mod2.update sub model.mod2
             in
                 ( { model | mod2 = mod }, Cmd.map Mod2Msg cmd )
+
+        NotificationMsg sub ->
+            let
+                ( notifications, cmd ) =
+                    Notifications.update sub model.notifications
+            in
+                ( { model | notifications = notifications }, Cmd.map NotificationMsg cmd )
 
 
 main : Program Never Model Msg
