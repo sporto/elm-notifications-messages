@@ -1,0 +1,14 @@
+{
+  "name": "elm-notifications-messages",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:sporto/elm-notifications-messages.git",
+  "author": "Sebastian Porto <s@porto5.com>",
+  "license": "MIT",
+  "dependencies": {
+    "elm-live": "^2.7.5"
+  },
+  "scripts": {
+    "up": "elm-live App.elm"
+  }
+}
